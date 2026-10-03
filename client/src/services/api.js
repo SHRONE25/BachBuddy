@@ -57,8 +57,12 @@ export const addReview = (propertyId, data) => api.post(`/reviews/property/${pro
 export const deleteReview = (id) => api.delete(`/reviews/${id}`);
 
 // ---- Uploads ----
-export const uploadImages = (formData) =>
-  api.post('/uploads', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+export const uploadImages = async (formData) => {
+  const res = await api.post('/uploads', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+  const base = import.meta.env.VITE_API_URL.replace('/api', '');
+  res.data.paths = res.data.paths.map((p) => `${base}${p}`);
+  return res;
+};
 
 // ---- Admin ----
 export const getAdminSummary = () => api.get('/admin/summary');
